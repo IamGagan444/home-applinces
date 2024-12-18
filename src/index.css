@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+background-color: black;
+}
+.swiper {
+  width: 240px;
+  height: 320px;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.swiper-slide:nth-child(3n) {
+  background: #f2709c;
+  background: -webkit-linear-gradient(to right, #ff9472, #f2709c);
+  background: linear-gradient(to right, #ff9472, #f2709c);
+}
+
+.swiper-slide:nth-child(4n) {
+  background: #f857a6;
+  background: -webkit-linear-gradient(to right, #ff5858, #f857a6);
+  background: linear-gradient(to right, #ff5858, #f857a6);
+}
+
+.swiper-slide:nth-child(1n) {
+  background: #4b6cb7;
+  background: -webkit-linear-gradient(to right, #182848, #4b6cb7);
+  background: linear-gradient(to right, #182848, #4b6cb7);
+}
+
+.swiper-slide:nth-child(2n) {
+  background: #c04848;
+  background: -webkit-linear-gradient(to right, #480048, #c04848);
+  background: linear-gradient(to right, #480048, #c04848);
+}
+
+.swiper-slide:nth-child(5n) {
+  background: #ec6f66;
+  background: -webkit-linear-gradient(to right, #f3a183, #ec6f66);
+  background: linear-gradient(to right, #f3a183, #ec6f66);
+}
+
+.swiper-slide:nth-child(6n) {
+  background: #1cd8d2;
+  background: -webkit-linear-gradient(to right, #93edc7, #1cd8d2);
+  background: linear-gradient(to right, #93edc7, #1cd8d2);
+}
+
+.swiper-slide:nth-child(7n) {
+  background-color: rgb(35, 99, 19);
+}
+
+.swiper-slide:nth-child(8n) {
+  background-color: rgb(0, 68, 255);
+}
+
+.swiper-slide:nth-child(9n) {
+  background-color: rgb(218, 12, 218);
+}
+
+.swiper-slide:nth-child(10n) {
+  background-color: rgb(54, 94, 77);
+}
