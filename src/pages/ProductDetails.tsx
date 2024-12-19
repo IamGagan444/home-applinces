@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Heart, ChevronLeft, ChevronRight, Loader } from "lucide-react";
-import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery, useViewOfferMutation } from "../redux/Api";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAddToCartMutation, useGetProductByIdQuery, useViewOfferMutation } from "../redux/Api";
 import MakeOfferModal from "../components/MakeOfferPopup";
-import Cookies from "js-cookie";
+
 import ViewOfferModal from "../components/ViewOfferModal";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import toast from "react-hot-toast";
+import { addToCart } from "../redux/cartSlice";
 
 export default function ProductDetails() {
  
@@ -15,7 +19,14 @@ export default function ProductDetails() {
   const [offerData, setOfferData] = useState(null);
 
   const { productId } = useParams();
-  const userId = Cookies.get("userId");
+  // const userId = Cookies.get("userId");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { userId, isAuthenticated }:any = useSelector(
+    (state: RootState) => state.auth
+  );
+
 
   const { data: product, isLoading } = useGetProductByIdQuery(productId);
   const [postData, { isLoading: loading }] = useViewOfferMutation();
@@ -30,7 +41,30 @@ export default function ProductDetails() {
       }
     })();
   }, [postData, productId, userId]);
+const [addToCartMutation] = useAddToCartMutation();
+  const handleAddToCart = async (product: any) => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to add items to your cart");
+      navigate("/login");
+      return;
+    }
 
+    try {
+      const result = await addToCartMutation({
+        productId: product._id,
+        userId,
+      }).unwrap();
+      if (result.success) {
+        dispatch(addToCart(product));
+        toast.success(`${product.title} added to cart!`);
+        navigate("/cart");
+      } else {
+        toast.error("Failed to add item to cart");
+      }
+    } catch (error) {
+      toast.error("An error occurred while adding to cart");
+    }
+  };
 
 
   if (isLoading || loading) {
@@ -131,6 +165,7 @@ export default function ProductDetails() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
+                onClick={() => handleAddToCart(product?.data)}
               >
                 ADD TO CART
               </motion.button>

@@ -17,7 +17,7 @@ const Cart: React.FC = () => {
   const dispatch = useDispatch()
 
   const totalPrice = cart.reduce((sum:number, item:Product) => sum + parseFloat(item.price), 0)
-  const { data, error, isLoading } = useGetAllCartProductQuery(userId, {
+  const { data, isLoading } = useGetAllCartProductQuery(userId, {
     skip: !userId, // Skip the query if userId is falsy
   });
 // console.log([{...data.data,cart}])
@@ -27,7 +27,7 @@ const carts=data?.data
 
 const deleteProduct=async(productId:string)=>{
   dispatch(removeFromCart(productId))
-const result= await removeProduct({userId,productId})
+const result:any= await removeProduct({userId,productId})
 if(result.success){
   toast.error("product reomved")
 }
@@ -61,7 +61,7 @@ if(isLoading||Loading){
               <img src={item.image} alt={item.title} className="w-24 h-24 object-cover mr-4" />
               <div className="flex-grow">
                 <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
-                <p className="text-gray-300">${item.price}</p>
+                <p className="text-gray-300">${item.offeredPrice?item.offeredPrice:item.price}</p>
               </div>
               <motion.button
                 className="bg-red-500 text-white px-4 py-2 rounded"
@@ -74,7 +74,7 @@ if(isLoading||Loading){
             </motion.div>
           ))}
           <div className="mt-8">
-            <h2 className="text-2xl font-bold">Total: ${totalPrice.toFixed(2)}</h2>
+            <h2 className="text-2xl font-bold text-white">Total: ${totalPrice.toFixed(2)}</h2>
           </div>
         </div>
       )}

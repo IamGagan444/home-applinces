@@ -38,7 +38,7 @@ const ViewOfferModal = ({ isOpen, onClose, offerData }: any) => {
                 </p>
                 <p>
                   <strong>Status:</strong>{" "}
-                  <span className="text-white capitalize bg-orange-400 p-1 rounded-lg">
+                  <span className={`text-white capitalize ${offerData?.status==="accept"?"bg-green-400":offerData?.status=="reject"?"bg-red-400":""} bg-orange-400 p-1 rounded-lg`}>
                     {offerData?.status}
                   </span>
                 </p>

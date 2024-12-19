@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Menu from "./Menu";
+import Cookies from "js-cookie";
 
 const Navbar: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [activeLink, setActiveLink] = useState("Home");
   const navigate = useNavigate();
-
+  const user = Cookies.get("userId");
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -47,7 +48,10 @@ const Navbar: React.FC = () => {
     { label: "Home", onClick: () => navigate("/") },
     { label: "Cart", onClick: () => navigate("/cart") },
     { label: "Seller", onClick: () => navigate("/seller-side") },
-    { label: "Login", onClick: () => navigate("/login") },
+    {
+      label: `${user ? "logout" : "login"}`,
+      onClick: () => navigate("/login"),
+    },
   ];
 
   return (

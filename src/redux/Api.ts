@@ -78,7 +78,6 @@ export const api = createApi({
       query: (userId) => ({
         url: `/get-offer/${userId}`,
         method: "get",
-       
       }),
       providesTags: ["Offer"],
     }),
@@ -89,8 +88,23 @@ export const api = createApi({
         body,
       }),
       invalidatesTags: ["Offer"],
-    })
-
+    }),
+    acceptOffer: builder.mutation({
+      query: (body) => ({
+        url: "/accept-offer",
+        method: "post",
+        body,
+      }),
+      invalidatesTags: ["Offer"],
+    }),
+    rejectOffer: builder.mutation({
+      query: (body) => ({
+        url: "/reject-offer",
+        method: "post",
+        body,
+      }),
+      invalidatesTags: ["Offer"],
+    }),
   }),
 });
 
@@ -105,4 +119,6 @@ export const {
   useMakeOfferMutation,
   useGetOfferQuery,
   useViewOfferMutation,
+  useAcceptOfferMutation,
+  useRejectOfferMutation,
 } = api;

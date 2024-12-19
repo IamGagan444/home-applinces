@@ -1,42 +1,33 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { useGetOfferQuery } from "../redux/Api";
+import {
+  useAcceptOfferMutation,
+  useGetOfferQuery,
+  useRejectOfferMutation,
+} from "../redux/Api";
 import { Loader } from "lucide-react";
 import Cookies from "js-cookie";
-interface Product {
-  _id: string;
-  title: string;
-  image: string;
-  price: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-  sellerId: string;
-}
-
-interface Offer {
-  _id: string;
-  userId: string;
-  productId: Product;
-  sellerId: string;
-  offeredPrice: string;
-  BuyerEmail: string;
-  __v: number;
-}
-
-interface ApiResponse {
-  statusCode: number;
-  message: string;
-  data: Offer[];
-  success: boolean;
-}
 
 const SellerSide = () => {
   const sellerId = Cookies.get("userId");
 
   const { data, isLoading } = useGetOfferQuery(sellerId);
+  console.log("dat", data);
 
-  if (isLoading) {
+  const [accept, { isLoading: loading }] = useAcceptOfferMutation();
+  const [reject, { isLoading: loadingReject }] = useRejectOfferMutation();
+
+  const acceptOffer = async (offeredPrice: string, offerId: string) => {
+    const result = await accept({ sellerId, offerId, offeredPrice });
+
+    console.log("result", result);
+  };
+  const rejectOffer = async (offerId: string) => {
+    const result = await reject({ sellerId, offerId });
+
+    console.log("result", result);
+  };
+
+  if (isLoading || loading || loadingReject) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
         <Loader className="animate-spin text-indigo-500" size={48} />
@@ -53,6 +44,7 @@ const SellerSide = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-12">
+      <h1 className="text-center font-bold text-3xl text-white">Seller side</h1>
       {data?.data?.map((offer: any) => (
         <motion.div
           key={offer._id}
@@ -78,29 +70,31 @@ const SellerSide = () => {
               Offered Price: ${offer.offeredPrice}
             </p>
             <p className="text-gray-600">Buyer Email: {offer.BuyerEmail}</p>
-           <div className="flex items-center justify-around capitalize">
-           <motion.button
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-             Accept
-            </motion.button>
-            <motion.button
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-             Reaject
-            </motion.button>
-            <motion.button
-              className="mt-4 px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-blue-600"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-             Counter
-            </motion.button>
-           </div>
+            <div className="flex items-center justify-around capitalize">
+              <motion.button
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-blue-600"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => acceptOffer(offer.offeredPrice, offer._id)}
+              >
+                Accept
+              </motion.button>
+              <motion.button
+                className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => rejectOffer(offer._id)}
+              >
+                Reject
+              </motion.button>
+              <motion.button
+                className="mt-4 px-4 py-2 bg-orange-400 text-white rounded-md hover:bg-blue-600"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Counter
+              </motion.button>
+            </div>
           </div>
         </motion.div>
       ))}

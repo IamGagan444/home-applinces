@@ -13,7 +13,7 @@ const ProductListing: React.FC = () => {
   const [addToCartMutation] = useAddToCartMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userId, isAuthenticated } = useSelector(
+  const { userId, isAuthenticated }:any = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -53,9 +53,7 @@ const ProductListing: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Product Listing</h1>
       <div className="flex justify-between items-center mb-4">
-        <Link to="/cart" className="bg-blue-500 text-white px-4 py-2 rounded">
-          View Cart
-        </Link>
+       
         {isAuthenticated ? (
           <span>Welcome, User ID: {userId}</span>
         ) : (
@@ -83,26 +81,19 @@ const ProductListing: React.FC = () => {
               onClick={() => navigate(`/product-details/${product?._id}`)}
             />
             <div className="p-4">
-              <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
+              <h2 className="text-xl font-semibold mb-2 text-white">{product.title}</h2>
               <p className="text-gray-300 mb-4">${product.price}</p>
-              <div className="flex justify-between">
+         
                 <motion.button
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className="bg-blue-500 text-white px-4 py-2 rounded w-full"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleAddToCart(product)}
                 >
                   Add to Cart
                 </motion.button>
-                <motion.button
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleAddToCart(product)}
-                >
-                  Make an Offer
-                </motion.button>
-              </div>
+               
+             
             </div>
           </motion.div>
         ))}

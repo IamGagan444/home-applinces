@@ -8,7 +8,7 @@ export interface Product {
   title: string;
   image: string;
   price: string;
-
+ offeredPrice:string
   sellerId?: string;
 }
 

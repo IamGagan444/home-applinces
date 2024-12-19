@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../redux/authSlice";
-import Cookies from "js-cookie";
+
 
 type LoginResponse = {
   data: {
@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [loginUser, { isError, isLoading }] = useLoginUserMutation();
+  const [loginUser, {  isLoading }] = useLoginUserMutation();
   const [registerUser, { isLoading: loader }] = usePostNewUserMutation();
 
   type ErrorType = FetchBaseQueryError | SerializedError;
