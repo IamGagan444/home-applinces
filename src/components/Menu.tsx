@@ -15,8 +15,8 @@ export default function Menu() {
 
   const navLinks = [
     { label: "Home", path: "/", onClick: () => handleNavigation("/") },
-    { label: "About", path: "/about", onClick: () => handleNavigation("/about") },
-    { label: "Contact", path: "/contact", onClick: () => handleNavigation("/contact") },
+    { label: "Cart", path: "/cart", onClick: () => handleNavigation("/cart") },
+    { label: "Seller", path: "/seller-side", onClick: () => handleNavigation("/seller-side") },
     { label: "Login", path: "/login", onClick: () => handleNavigation("/login") },
   ];
 

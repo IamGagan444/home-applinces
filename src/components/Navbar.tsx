@@ -45,8 +45,8 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { label: "Home", onClick: () => navigate("/") },
-    { label: "About", onClick: () => navigate("/about") },
-    { label: "Contact", onClick: () => navigate("/contact") },
+    { label: "Cart", onClick: () => navigate("/cart") },
+    { label: "Seller", onClick: () => navigate("/seller-side") },
     { label: "Login", onClick: () => navigate("/login") },
   ];
 
@@ -68,7 +68,7 @@ const Navbar: React.FC = () => {
                 navigate("/");
               }}
             >
-              Gym <span className="text-yellow-500">Pro</span>
+              Town & <span className="text-yellow-500">Sea</span>
             </div>
 
             <div className="hidden cu600:flex space-x-6 items-center">

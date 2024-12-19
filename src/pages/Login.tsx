@@ -1,46 +1,100 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { useLoginUserMutation, usePostNewUserMutation } from "../redux/Api";
+import Cookie from "js-cookie";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../redux/authSlice";
+import Cookies from "js-cookie";
 
-
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useLoginUserMutation } from '../redux/productApi'
-import Cookie from "js-cookie"
+type LoginResponse = {
+  data: {
+    user:{
+      _id: string;
+   
+    email: string;
+    },
+    accessToken: string;
+   
+  };
+  success: boolean;
+  message: string;
+};
 
 const LoginPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
- const [loginUser,{isError,isLoading}]= useLoginUserMutation()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = async(e: React.FormEvent) => {
-    e.preventDefault()
-  
+  const [loginUser, { isError, isLoading }] = useLoginUserMutation();
+  const [registerUser, { isLoading: loader }] = usePostNewUserMutation();
+
+  type ErrorType = FetchBaseQueryError | SerializedError;
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+
     try {
-      const data = await loginUser({ email, password }).unwrap();
-      console.log(data.data);
-      Cookie.set("accessToken", data?.data?.accessToken,{ expires: 1 });
-      //set the data in cookies
-     
+      // Define the type of the response based on the API call
+      const result: LoginResponse = await (isLogin
+        ? loginUser({ email, password }).unwrap()
+        : registerUser({ email, password }).unwrap());
+
+      // Successfully logged in or registered
+      console.log(result.data);
+      if (result.success) {
+        dispatch(setUser({ userId: result.data.user._id }));
+        Cookie.set("user_cookie",JSON.stringify(result?.data),{expires:7})
+        toast.success("Login successful!");
+        navigate("/");
+      } else {
+        toast.error(result.message || "Login failed");
+      }
+      Cookie.set("accessToken", result.data.accessToken, { expires: 1 });
       console.log("User logged in successfully!");
-    } catch (err) {
-      console.error("Failed to log in user: ", err);
+    } catch (err: unknown) {
+      const error = err as ErrorType;
+
+      if ("status" in error) {
+        console.error("API Error:", error.status, error.data);
+      } else if ("message" in error) {
+        console.error("Client Error:", error.message);
+      } else {
+        console.error("Unexpected Error:", error);
+      }
     }
-  }
+  };
 
   const toggleMode = () => {
-    setIsLogin(!isLogin)
-    setEmail('')
-    setPassword('')
-  }
+    setIsLogin(!isLogin);
+    setEmail("");
+    setPassword("");
+  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
-  }
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
 
   const inputVariants = {
     hidden: { x: -50, opacity: 0 },
     visible: { x: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+
+  if (isLoading || loader) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -52,10 +106,15 @@ const LoginPage: React.FC = () => {
         variants={containerVariants}
       >
         <div className="p-8">
-          <h2 className="text-3xl font-bold text-center mb-6 text-white">{isLogin ? 'Login' : 'Sign Up'}</h2>
+          <h2 className="text-3xl font-bold text-center mb-6 text-white">
+            {isLogin ? "Login" : "Sign Up"}
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <motion.div variants={inputVariants}>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-300"
+              >
                 Email
               </label>
               <input
@@ -69,7 +128,10 @@ const LoginPage: React.FC = () => {
               />
             </motion.div>
             <motion.div variants={inputVariants}>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-300"
+              >
                 Password
               </label>
               <input
@@ -87,7 +149,7 @@ const LoginPage: React.FC = () => {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-900"
               >
-                {isLogin ? 'Login' : 'Sign Up'}
+                {isLogin ? "Login" : "Sign Up"}
               </button>
             </motion.div>
           </form>
@@ -99,19 +161,18 @@ const LoginPage: React.FC = () => {
           transition={{ delay: 0.5 }}
         >
           <p className="text-sm text-center text-gray-300">
-            {isLogin ? "Don't have an account?" : 'Already have an account?'}
+            {isLogin ? "Don't have an account?" : "Already have an account?"}
             <button
               onClick={toggleMode}
               className="ml-1 font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline transition ease-in-out duration-150"
             >
-              {isLogin ? 'Sign up' : 'Log in'}
+              {isLogin ? "Sign up" : "Log in"}
             </button>
           </p>
         </motion.div>
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
-
+export default LoginPage;
