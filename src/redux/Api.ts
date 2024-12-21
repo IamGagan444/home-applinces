@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { AddToCartResponse, Product, ProductResponse } from "../types";
 
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "https://home-backend-3.onrender.com/api";
 
 export const api = createApi({
   reducerPath: "api",

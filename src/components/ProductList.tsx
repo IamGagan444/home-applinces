@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { useAllProductQuery, useAddToCartMutation } from "../redux/Api";
@@ -54,16 +54,7 @@ const ProductListing: React.FC = () => {
       <h1 className="text-3xl font-bold mb-8">Product Listing</h1>
       <div className="flex justify-between items-center mb-4">
        
-        {isAuthenticated ? (
-          <span>Welcome, User ID: {userId}</span>
-        ) : (
-          <Link
-            to="/login"
-            className="bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Login
-          </Link>
-        )}
+        
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {products?.map((product) => (
